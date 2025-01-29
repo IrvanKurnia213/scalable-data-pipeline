@@ -169,3 +169,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+airflow/logs/
+spark/ivy_cache
+spark/ivy_jars
+spark/work

@@ -1,15 +1,22 @@
 # Use the official Airflow image as the base
 FROM apache/airflow:latest
 
-RUN mkdir -p /opt/airflow/logs && chown -R airflow:airflow /opt/airflow/logs
+# Install required system dependencies
+USER root
+RUN apt-get update && apt-get install -y librdkafka-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y openjdk-17-jdk && rm -rf /var/lib/apt/lists/*
 
-# Switch to airflow User
+RUN java -version
+
+# Set JAVA_HOME environment variable
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-arm64
+ENV PATH=$JAVA_HOME/bin:$PATH
+
+# Switch to airflow user
 USER airflow
 
-# Install requirements
-RUN pip install apache-airflow-providers-docker \
-  && pip install apache-airflow-providers-http \
-  && pip install confluent-kafka
+# Copy the requirements.txt into the container
+COPY requirements.txt /requirements.txt
 
-# Switch back to root user
-USER root
+# Install required Python libraries from the requirements.txt file
+RUN pip install --no-cache-dir -r /requirements.txt
