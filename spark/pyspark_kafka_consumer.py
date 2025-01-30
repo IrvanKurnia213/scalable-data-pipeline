@@ -18,8 +18,8 @@ KAFKA_TOPIC = "raw-data"
 
 # Define the schema of Kafka messages
 schema = StructType([
-    StructField("user_id", StringType(), True),
-    StructField("movie_id", StringType(), True),
+    StructField("userId", StringType(), True),
+    StructField("movieId", StringType(), True),
     StructField("rating", StringType(), True),
     StructField("timestamp", StringType(), True)
 ])

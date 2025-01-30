@@ -35,7 +35,8 @@ services:
   
   spark:
     image: apache/spark-py:v3.4.0
-    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    user: root
+    entrypoint: ["/bin/bash", "-c", "pip install psycopg2-binary && exec /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master"]
     container_name: spark-master
     environment:
       SPARK_MODE: "standalone"
@@ -157,6 +158,9 @@ services:
       - EXECUTOR=Local
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-postgres/airflow
       - AIRFLOW__CORE__FERNET_KEY=plIipb9RU3-3wJ1UNaAtqVNJrqFEks1-dGbJM34EW7U=
+      - AIRFLOW__CORE__PARALLELISM=4
+      - AIRFLOW__SCHEDULER__DAG_CONCURRENCY=2
+      - AIRFLOW__SCHEDULER__MAX_ACTIVE_RUNS_PER_DAG=2
       - AIRFLOW__WEBSERVER__SECRET_KEY=secret
       - AIRFLOW_WWW_USER_USERNAME=airflow
       - AIRFLOW_WWW_USER_PASSWORD=airflow
